@@ -1,4 +1,4 @@
-package main
+package crc16
 
 import (
 	"strings"
@@ -7,22 +7,6 @@ import (
 
 var largeText = []byte(strings.Repeat("a", 50000))
 var smallText = []byte(strings.Repeat("a", 5))
-
-func naive(data []byte, poly uint16, init uint16, xorout uint16) uint16 {
-	var crc = init
-	for _, item := range data {
-		crc ^= uint16(item) << 0x8
-		for j := 0; j < 8; j++ {
-			if crc&0x8 == 0 {
-				crc <<= 1
-			} else {
-				crc <<= 1
-				crc ^= poly
-			}
-		}
-	}
-	return crc ^ xorout
-}
 
 func AssetEqual(t *testing.T, expected uint16, actual uint16) {
 	if expected != actual {
@@ -153,22 +137,6 @@ func TestNormalized(t *testing.T) {
 		AssetEqual(t, 0xABFF, Checksum(input, 0x1021, 0x0000, 0x0000))
 	}
 
-}
-
-func BenchmarkNaiveSmall(b *testing.B) {
-	b.ResetTimer()
-	b.SetBytes(int64(len(smallText)))
-	for n := 0; n < b.N; n++ {
-		naive(smallText, 0x9AC1, 0xFFFF, 0x0000)
-	}
-}
-
-func BenchmarkNaiveLarge(b *testing.B) {
-	b.ResetTimer()
-	b.SetBytes(int64(len(largeText)))
-	for n := 0; n < b.N; n++ {
-		naive(largeText, 0x9AC1, 0xFFFF, 0x0000)
-	}
 }
 
 func BenchmarkCrcSmall(b *testing.B) {
