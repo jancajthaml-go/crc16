@@ -18,6 +18,17 @@ func TestCrc16EmptyVector(t *testing.T) {
 	AssetEqual(t, 0xFFFF, Checksum(nil, 0x9AC1, 0xFFFF, 0x0000))
 }
 
+func TestPrecalculatedNormalized(t *testing.T) {
+	input := []byte("abcdefgh")
+
+	t.Log("CRC-16/CCITT-FALSE")
+	{
+		c := New(0x1021, 0xFFFF, 0x0000)
+		AssetEqual(t, 0x9AC1, c.Checksum(input))
+	}
+
+}
+
 func TestNormalized(t *testing.T) {
 
 	input := []byte("abcdefgh")
@@ -152,5 +163,23 @@ func BenchmarkCrcLarge(b *testing.B) {
 	b.SetBytes(int64(len(largeText)))
 	for n := 0; n < b.N; n++ {
 		Checksum(largeText, 0x9AC1, 0xFFFF, 0x0000)
+	}
+}
+
+func BenchmarkPrecalculatedCrcSmall(b *testing.B) {
+	c := New(0x1021, 0xFFFF, 0x0000)
+	b.ResetTimer()
+	b.SetBytes(int64(len(smallText)))
+	for n := 0; n < b.N; n++ {
+		c.Checksum(smallText)
+	}
+}
+
+func BenchmarkPrecalculatedCrcLarge(b *testing.B) {
+	c := New(0x1021, 0xFFFF, 0x0000)
+	b.ResetTimer()
+	b.SetBytes(int64(len(largeText)))
+	for n := 0; n < b.N; n++ {
+		c.Checksum(largeText)
 	}
 }
