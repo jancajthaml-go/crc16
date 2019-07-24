@@ -6,13 +6,15 @@ CRC which encode messages by adding a fixed-length check value, for the purpose 
 
 However, it is not suitable for protection against intentional alteration of data.
 
-Implementation is tableless with variable 16bit polynomial.
+Implementation provides both tableless and tabular checksum functions with variable 16bit polynomial.
 
 ### Performance ###
 
 ```
-BenchmarkCrcSmall  28.62 MB/s  0 B/op  0 allocs/op
-BenchmarkCrcLarge  25.72 MB/s  0 B/op  0 allocs/op
+BenchmarkCrcSmall               63.42 MB/s   0 B/op  0 allocs/op
+BenchmarkCrcLarge               28.34 MB/s   0 B/op  0 allocs/op
+BenchmarkPrecalculatedCrcSmall  536.36 MB/s  0 B/op  0 allocs/op
+BenchmarkPrecalculatedCrcLarge  384.65 MB/s  0 B/op  0 allocs/op
 ```
 
 ### Usage ###
@@ -25,5 +27,10 @@ poly := 0x1021
 init := 0xFFFF
 xorout := 0x0000
 
+// for tableless
 crc16.Checksum(data, poly, init, xorout) // 0x9AC1
+
+// for tabular
+instance = crc16.New(poly, init, xorout)
+instance.Checksum(data) // 0x9AC1
 ```

@@ -1,5 +1,62 @@
 package crc16
 
+// CRC holds crc16 parameters and precalculated table
+type CRC struct {
+	table  []uint16
+	poly   uint16
+	xorout uint16
+	init   uint16
+}
+
+// New returns CRC16 instance with precalculated table
+func New(poly uint16, init uint16, xorout uint16) CRC {
+	result := CRC{
+		poly:   poly,
+		xorout: xorout,
+		init:   init,
+		table:  createTable(poly, init, xorout),
+	}
+
+	return result
+}
+
+func createTable(poly uint16, init uint16, xorout uint16) []uint16 {
+	result := make([]uint16, 256)
+	var bit uint16
+	for divident := 0; divident < 256; divident++ {
+		var current uint16 = 0x0000
+		for j := uint16(0x0080); j != 0; j >>= 1 {
+			if (uint16(divident) & j) != 0 {
+				bit = (current & 0x8000) ^ 0x8000
+			} else {
+				bit = current & 0x8000
+			}
+			switch bit {
+			case 0:
+				current <<= 1
+			default:
+				current = (current << 1) ^ poly
+			}
+		}
+		result[divident] = current & 0xFFFF
+	}
+	return result
+}
+
+// Checksum returns CRC16 checksum of given CRC instance
+func (crc *CRC) Checksum(data []byte) uint16 {
+	var pos uint8
+	var result = crc.init
+	for _, item := range data {
+		result = result ^ uint16(item)<<8
+		pos = uint8((result >> 8) & 0xFF)
+		result = (result << 8) & 0xFF
+		result = (result ^ crc.table[pos]) & 0xFFFF
+	}
+	return result ^ crc.xorout
+}
+
+// Checksum returns CRC16 checksum for given parameters
 func Checksum(data []byte, poly uint16, init uint16, xorout uint16) uint16 {
 	var crc uint16 = init
 	var bit uint16
