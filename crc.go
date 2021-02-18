@@ -9,15 +9,13 @@ type CRC struct {
 }
 
 // New returns crc16 instance with precalculated table
-func New(poly uint16, init uint16, xorout uint16) CRC {
-	result := CRC{
+func NewCRC(poly uint16, init uint16, xorout uint16) CRC {
+	return CRC{
 		poly:   poly,
 		xorout: xorout,
 		init:   init,
 		table:  createTable(poly, init, xorout),
 	}
-
-	return result
 }
 
 func createTable(poly uint16, init uint16, xorout uint16) []uint16 {
@@ -58,8 +56,10 @@ func (crc *CRC) Checksum(data []byte) uint16 {
 
 // Checksum returns crc16 checksum for given parameters
 func Checksum(data []byte, poly uint16, init uint16, xorout uint16) uint16 {
-	var crc uint16 = init
-	var bit uint16
+	var (
+		crc uint16 = init
+		bit uint16
+	)
 
 	for _, item := range data {
 		for j := uint16(0x0080); j != 0; j >>= 1 {
