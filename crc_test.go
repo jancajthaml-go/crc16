@@ -23,7 +23,7 @@ func TestPrecalculatedNormalized(t *testing.T) {
 
 	t.Log("CRC-16/CCITT-FALSE")
 	{
-		c := New(0x1021, 0xFFFF, 0x0000)
+		c := NewCRC(0x1021, 0xFFFF, 0x0000)
 		AssetEqual(t, 0x9AC1, c.Checksum(input))
 	}
 
@@ -38,10 +38,12 @@ func TestNormalized(t *testing.T) {
 		AssetEqual(t, 0x9AC1, Checksum(input, 0x1021, 0xFFFF, 0x0000))
 	}
 
-	//t.Log("CRC-16/ARC")
-	//{
-	// CRC-16/ARC	0xE8C1	0xBB3D	0x8005	0x0000	true	true	0x0000
-	//}
+	/*
+	t.Log("CRC-16/ARC")
+	{
+		CRC-16/ARC	0xE8C1	0xBB3D	0x8005	0x0000	true	true	0x0000
+	}
+	*/
 
 	t.Log("CRC-16/AUG-CCITT")
 	{
@@ -167,7 +169,7 @@ func BenchmarkCrcLarge(b *testing.B) {
 }
 
 func BenchmarkPrecalculatedCrcSmall(b *testing.B) {
-	c := New(0x1021, 0xFFFF, 0x0000)
+	c := NewCRC(0x1021, 0xFFFF, 0x0000)
 	b.ResetTimer()
 	b.SetBytes(int64(len(smallText)))
 	for n := 0; n < b.N; n++ {
@@ -176,7 +178,7 @@ func BenchmarkPrecalculatedCrcSmall(b *testing.B) {
 }
 
 func BenchmarkPrecalculatedCrcLarge(b *testing.B) {
-	c := New(0x1021, 0xFFFF, 0x0000)
+	c := NewCRC(0x1021, 0xFFFF, 0x0000)
 	b.ResetTimer()
 	b.SetBytes(int64(len(largeText)))
 	for n := 0; n < b.N; n++ {
