@@ -23,7 +23,7 @@ func TestPrecalculatedNormalized(t *testing.T) {
 
 	t.Log("CRC-16/CCITT-FALSE")
 	{
-		c := NewCRC(0x1021, 0xFFFF, 0x0000)
+		c := New(0x1021, 0xFFFF, 0x0000)
 		AssetEqual(t, 0x9AC1, c.Checksum(input))
 	}
 
@@ -169,7 +169,7 @@ func BenchmarkCrcLarge(b *testing.B) {
 }
 
 func BenchmarkPrecalculatedCrcSmall(b *testing.B) {
-	c := NewCRC(0x1021, 0xFFFF, 0x0000)
+	c := New(0x1021, 0xFFFF, 0x0000)
 	b.ResetTimer()
 	b.SetBytes(int64(len(smallText)))
 	for n := 0; n < b.N; n++ {
@@ -178,7 +178,7 @@ func BenchmarkPrecalculatedCrcSmall(b *testing.B) {
 }
 
 func BenchmarkPrecalculatedCrcLarge(b *testing.B) {
-	c := NewCRC(0x1021, 0xFFFF, 0x0000)
+	c := New(0x1021, 0xFFFF, 0x0000)
 	b.ResetTimer()
 	b.SetBytes(int64(len(largeText)))
 	for n := 0; n < b.N; n++ {
