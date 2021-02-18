@@ -11,4 +11,4 @@ benchmark:
 
 .PHONY: build
 build:
-	@go build -gcflags '-m -m' ./luhn.go
+	@go build -gcflags '-m -m' ./crc.go
