@@ -37,6 +37,6 @@ xorout := 0x0000
 crc16.Checksum(data, poly, init, xorout) // 0x9AC1
 
 // for precalculated tabular
-instance = crc16.NewCRC(poly, init, xorout)
+instance = crc16.New(poly, init, xorout)
 instance.Checksum(data) // 0x9AC1
 ```

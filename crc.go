@@ -9,7 +9,7 @@ type CRC struct {
 }
 
 // New returns crc16 instance with precalculated table
-func NewCRC(poly uint16, init uint16, xorout uint16) CRC {
+func New(poly uint16, init uint16, xorout uint16) CRC {
 	return CRC{
 		poly:   poly,
 		xorout: xorout,
